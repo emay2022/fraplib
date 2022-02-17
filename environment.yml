@@ -1,0 +1,9 @@
+name: fraplib
+channels:
+  - defaults
+dependencies:
+  - pandoc
+  - pip
+  - python
+  - pip:
+      - -e .[dev]
