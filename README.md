@@ -7,3 +7,5 @@
 [![codecov](https://codecov.io/gh/emay2022/fraplib/branch/master/graph/badge.svg)](https://codecov.io/gh/emay2022/fraplib)
 
 functions for displaying and calculating frap experiment stuff
+
+in development - probably won't work for you
