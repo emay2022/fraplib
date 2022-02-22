@@ -1,10 +1,11 @@
 import czifile
 from pathlib import Path
 import pandas as pd
+import numpy as np
 
 def load_data(path):
     """
-    this loads the file and the metadata
+    loads the file and the metadata, including frame-specific metadata
 
     Parameters
     ----------
@@ -15,9 +16,12 @@ def load_data(path):
     -------
     file : CziFile
     metadata : dict
-    image_metadata : pd.DataFrame
+    subblocks : dict
+    attachments: dict
     """
+    
     file = czifile.CziFile(str(Path(path).resolve()))
+    
     metadata = [
         segment.data(raw=False)
         for segment in file.segments()
@@ -25,26 +29,25 @@ def load_data(path):
     ][
         0
     ]  # a dictionary
-
-    # extract subblock segments as a dictionary, and format the image-specific metadata as a dataframe
-    ExpStartTime = pd.to_datetime(metadata['ImageDocument']['Metadata']['Information']['Image']['Dimensions']['T']['StartTime'])
     
-    subblock_info = {
+    subblocks = {
         "images": [
             segment.data()
             for segment in file.segments()
             if isinstance(segment, czifile.SubBlockSegment)
         ],
         "image_metadata": [
-            segment.metadata()["Tags"]
+            segment.metadata()
             for segment in file.segments()
-            if isinstance(segment, czifile.SubBlockSegment)
+            if isinstance(segment, czifile.SubBlockSegment) 
+            # and segment.metadata() is not None
         ],
     }
-    image_metadata = pd.DataFrame(subblock_info["image_metadata"])
-    image_metadata["TimeSince"] = (
-        pd.to_datetime(image_metadata["AcquisitionTime"]) - ExpStartTime
-    ) / pd.Timedelta(seconds=1)
-    # image_metadata <-- final dataframe
+    
+    attachments = {
+        segment.attachment_entry.name : segment.data()
+        for segment in file.segments()
+        if isinstance(segment, czifile.AttachmentSegment)
+    }
 
-    return file, metadata, image_metadata
+    return file, metadata, subblocks, attachments
