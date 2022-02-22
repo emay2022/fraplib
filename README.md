@@ -8,4 +8,11 @@
 
 functions for displaying and calculating frap experiment stuff
 
-in development - probably won't work for you
+in development - this library probably won't work for you
+
+Dependencies
+------------
+czifile
+pathlib
+pandas
+numpy
