@@ -2,6 +2,7 @@ import czifile
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from aicsimageio import AICSImage # https://github.com/AllenCellModeling/aicsimageio
 
 def load_data(path):
     """
@@ -14,7 +15,8 @@ def load_data(path):
 
     Returns
     -------
-    file : CziFile
+    data : aicsimageio.aics_image.AICSImage
+    file : czifile.CziFile
     metadata : dict
     subblocks : dict
     attachments: dict
@@ -22,13 +24,10 @@ def load_data(path):
     
     file = czifile.CziFile(str(Path(path).resolve()))
     
-    metadata = [
-        segment.data(raw=False)
-        for segment in file.segments()
-        if isinstance(segment, czifile.MetadataSegment)
-    ][
-        0
-    ]  # a dictionary
+    for segment in file.segments():
+        if isinstance(segment, czifile.MetadataSegment):
+            metadata = segment.data(raw=False) # a dictionary
+        
     
     subblocks = {
         "images": [
@@ -49,5 +48,7 @@ def load_data(path):
         for segment in file.segments()
         if isinstance(segment, czifile.AttachmentSegment)
     }
+    
+    data = AICSImage(str(Path(path).resolve()))
 
-    return file, metadata, subblocks, attachments
+    return data, file, metadata, subblocks, attachments

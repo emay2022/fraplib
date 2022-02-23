@@ -9,6 +9,8 @@ from ._loading import load_data
 from ._reltime import reltimes_fromAttach
 from ._reltime import reltimes_fromSubblocks
 from ._reltime2 import reltimes
+from ._falsecolor import make_colormap
+from ._falsecolor import falsecolor
 
 __all__ = [
     "__version__",
@@ -18,5 +20,7 @@ __all__ = [
     "frame_times",
     "reltimes_fromAttach",
     "reltimes_fromSubBlocks",
-    "reltimes"
+    "reltimes",
+    "make_colormap",
+    "falsecolor"
 ]
