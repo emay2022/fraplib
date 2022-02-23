@@ -16,3 +16,5 @@ czifile
 pathlib
 pandas
 numpy
+matplotlib.colors
+pyplot
