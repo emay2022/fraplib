@@ -13,6 +13,7 @@ from ._falsecolor import make_colormap
 from ._falsecolor import falsecolor
 from ._scalebar import scalebar
 from ._scalebar2 import scalebar2
+from ._timestamp import timestamp
 
 __all__ = [
     "__version__",
@@ -26,5 +27,6 @@ __all__ = [
     "make_colormap",
     "falsecolor",
     "scalebar",
-    "scalebar2"
+    "scalebar2",
+    "timestamp"
 ]
