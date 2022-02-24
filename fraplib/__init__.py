@@ -11,6 +11,7 @@ from ._reltime import reltimes_fromSubblocks
 from ._reltime2 import reltimes
 from ._falsecolor import make_colormap
 from ._falsecolor import falsecolor
+from ._scalebar import scalebar
 
 __all__ = [
     "__version__",
@@ -22,5 +23,6 @@ __all__ = [
     "reltimes_fromSubBlocks",
     "reltimes",
     "make_colormap",
-    "falsecolor"
+    "falsecolor",
+    "scalebar"
 ]

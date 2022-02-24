@@ -45,19 +45,38 @@ def make_colormap(rgb):
     
     return new_cm
 
-def falsecolor(im, cmap = None):
+def falsecolor(im, cmap = None, *args, **kwargs):
+    """
+    creates figure and axes objects displaying im with an optionally specified false coloring by cmap
+    
+    Parameters
+    ----------
+    im : np.ndarray
+        image to be displayed
+    cmap : list or matplotlib.colors.ListedColormap or matplotlib.colors. LinearSegmentedColormap
+        [r = #, g = #, b = #] where # is between 0 and 256
+    *args : list
+        passes arguments to plt.imshow()
+    **kwargs : dict
+        passes keyword arguments to plt.imshow()
+    
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+    ax : matplotlib.axes._subplots.AxesSubplot
+    """
     
     fig, ax = plt.subplots()
     
     if cmap is not None:
         if isinstance(cmap, ListedColormap) or isinstance(cmap, LinearSegmentedColormap):
-            plt.imshow(im, cmap=cmap)
+            plt.imshow(im, cmap=cmap, *args, **kwargs)
         else:
             cmap = make_colormap(cmap)
-            plt.imshow(im, cmap=cmap)
+            plt.imshow(im, cmap=cmap, *args, **kwargs)
     else:
-        plt.imshow(im)
+        plt.imshow(im, *args, **kwargs)
         
     plt.axis("off")
-    plt.show()
-    plt.close()
+    
+    return fig, ax
