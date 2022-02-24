@@ -14,7 +14,6 @@ def scalebar2(length, data, ax = None, color = None):
     ax : matplotlib.axes._subplots.AxesSubplot
         axes object on which to put the scale bar
     color : str
-    lw : float
     """
     
     pxsize = data.physical_pixel_sizes.X/10
