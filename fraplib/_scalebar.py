@@ -1,5 +1,4 @@
 from matplotlib import pyplot as plt
-import matplotlib.patches as patches
 
 def scalebar(length, data, ax = None, color = None, lw = 1):
     """

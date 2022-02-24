@@ -12,6 +12,7 @@ from ._reltime2 import reltimes
 from ._falsecolor import make_colormap
 from ._falsecolor import falsecolor
 from ._scalebar import scalebar
+from ._scalebar2 import scalebar2
 
 __all__ = [
     "__version__",
@@ -24,5 +25,6 @@ __all__ = [
     "reltimes",
     "make_colormap",
     "falsecolor",
-    "scalebar"
+    "scalebar",
+    "scalebar2"
 ]
