@@ -1,3 +1,5 @@
+from matplotlib import pyplot as plt
+
 def timestamp(frame, timestamps, fsize = 6, t_units = 'sec', ax = None, color = None):
     """
     adds a time stamp to an image
