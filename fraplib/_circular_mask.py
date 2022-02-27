@@ -1,24 +1,24 @@
 import numpy as np
 
-def create_circular_mask(h, w, center=None, radius=None):
+def create_circular_mask(data, roi):
     """
     create a circular mask
     
     Parameters
     ----------
-    h: float
-        image height in pixels
-    w: float
-        image width in pixels
-    center: tuple
-        (center x position in pixels, center y position in pixels)
-    radius: float
-        radius of the circle in pixels
+    data : aicsimageio.aics_image.AICSImage
+    roi : dict
         
     Returns
     -------
     mask : np.ndarray
     """
+    
+    h = data.dims.Y
+    w = data.dims.X
+    
+    center = (roi['X'], roi['Y'])
+    radius = roi['R']
     
     if center is None: # use the middle of the image
         center = (int(w/2), int(h/2))

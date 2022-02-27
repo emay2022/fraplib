@@ -87,6 +87,6 @@ def Dcoeff(data_x, data_y, radius_microns):
     
     t_half = thalf(data_x, data_y)
     
-    D = 0.224 * radius**2 / t_half
+    D = 0.224 * radius_microns**2 / t_half
     
     return D
