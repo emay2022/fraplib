@@ -36,6 +36,7 @@ def get_roi(md):
         
     return roi
 
+from matplotlib import pyplot as plt
 from matplotlib.patches import Ellipse
 
 def draw_circle(roi):
