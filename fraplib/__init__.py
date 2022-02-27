@@ -22,6 +22,14 @@ from ._calculations import _sum_extract
 from ._calculations import _mean_extract
 from ._calculations import _norm_extract
 from ._calculations import get_data_for_fit
+from ._expfit import exp
+from ._expfit import fit_params
+from ._expfit import fit_curve
+from ._expfit import rhalf
+from ._expfit import thalf
+from ._expfit import Dcoeff
+
+
 
 __all__ = [
     "__version__",
@@ -40,5 +48,11 @@ __all__ = [
     "get_roi",
     "create_circular_mask",
     "draw_circle",
-    "get_data_for_fit"
+    "get_data_for_fit",
+    "exp",
+    "fit_params",
+    "fit_curve",
+    "rhalf",
+    "thalf",
+    "Dcoeff"
 ]
