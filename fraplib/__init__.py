@@ -17,6 +17,11 @@ from ._timestamp import timestamp
 from ._regions import get_roi
 from ._circular_mask import create_circular_mask
 from ._regions import draw_circle
+from ._calculations import _extract
+from ._calculations import _sum_extract
+from ._calculations import _mean_extract
+from ._calculations import _norm_extract
+from ._calculations import get_data_for_fit
 
 __all__ = [
     "__version__",
@@ -34,5 +39,6 @@ __all__ = [
     "timestamp",
     "get_roi",
     "create_circular_mask",
-    "draw_circle"
+    "draw_circle",
+    "get_data_for_fit"
 ]
