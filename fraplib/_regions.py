@@ -35,3 +35,32 @@ def get_roi(md):
         roi = {'X': x, 'Y': y, 'R': r}
         
     return roi
+
+from matplotlib.patches import Ellipse
+
+def draw_circle(roi):
+    """
+    adds a circle corresponding to roi onto an image
+    
+    Parameters
+    ----------
+    roi: dict
+        with keys: {'X': x, 'Y': y, 'R': r}
+    
+    Returns
+    -------
+    circle : matplotlib.patches.Patch
+    """
+    
+    x = roi['X']
+    y = roi['Y']
+    r = roi['R']
+    
+    circle = plt.Circle(
+        (x, y),
+        r,
+        facecolor = 'none',
+        edgecolor = 'y',
+        linewidth = 1)
+    
+    return circle

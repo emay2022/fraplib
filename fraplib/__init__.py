@@ -16,6 +16,7 @@ from ._scalebar2 import scalebar2
 from ._timestamp import timestamp
 from ._regions import get_roi
 from ._circular_mask import create_circular_mask
+from ._regions import draw_circle
 
 __all__ = [
     "__version__",
@@ -32,5 +33,6 @@ __all__ = [
     "scalebar2",
     "timestamp",
     "get_roi",
-    "create_circular_mask"
+    "create_circular_mask",
+    "draw_circle"
 ]
