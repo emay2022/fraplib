@@ -47,6 +47,28 @@ def load_data(path):
         if isinstance(segment, czifile.AttachmentSegment)
     }
     
+    if 'EventList' in attachments:
+        evtype = [
+            entry.EV_TYPE[entry.event_type] 
+            for entry in attachments['EventList'] 
+            if isinstance(entry, czifile.EventListEntry)
+        ]
+        evtime = [
+            entry.time 
+            for entry in attachments['EventList'] 
+            if isinstance(entry, czifile.EventListEntry)
+        ]
+        evdesc = [
+            entry.description 
+            for entry in attachments['EventList'] 
+            if isinstance(entry, czifile.EventListEntry)
+        ]
+        attachments['EventList'] = {
+            'event type' : evtype, 
+            'event time' : evtime, 
+            'event description' : evdesc
+        }
+
     data = AICSImage(str(Path(path).resolve()))
     
     expt = {'data' : data,

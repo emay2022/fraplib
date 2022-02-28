@@ -27,6 +27,8 @@ from ._expfit import rhalf
 from ._expfit import thalf
 from ._expfit import Dcoeff
 from ._reltime3 import relt
+from ._reltime3 import postbleach
+from ._reltime3 import prebleach
 
 
 
@@ -51,5 +53,7 @@ __all__ = [
     "rhalf",
     "thalf",
     "Dcoeff",
-    "relt"
+    "relt",
+    "postbleach",
+    "prebleach"
 ]
