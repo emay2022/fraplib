@@ -28,7 +28,7 @@ def fit_params(data_x, data_y):
     
     function = exp
     
-    ig = [-0.5, 0.125, 0, 1]
+    ig = [-0.15, 0.125, 0, 1]
     
     popt, pcov = curve_fit(function, data_x, data_y, ig)
     
@@ -80,10 +80,15 @@ def thalf(data_x, data_y):
     
     return t_half
 
-def Dcoeff(data_x, data_y, radius_microns):
+def Dcoeff(data_x, data_y, expt, roi):
     """
     
     """
+    um_per_px = expt['md']['ImageDocument']['Metadata']['Scaling']['Items']['Distance'][0]['Value']*1e6
+    
+    radius = roi['R']
+    
+    radius_microns = radius*um_per_px
     
     t_half = thalf(data_x, data_y)
     

@@ -1,4 +1,4 @@
-def get_roi(md):
+def get_roi(expt):
     """
     gets the regions of interest from the metadata
     
@@ -12,6 +12,7 @@ def get_roi(md):
     roi : list or dict
     """
     
+    md = expt['md']
     test = md['ImageDocument']['Metadata']['Layers']['Layer']
     
     if isinstance(test, list):

@@ -1,6 +1,6 @@
 import numpy as np
 
-def create_circular_mask(data, roi):
+def create_circular_mask(expt, roi):
     """
     create a circular mask
     
@@ -13,6 +13,7 @@ def create_circular_mask(data, roi):
     -------
     mask : np.ndarray
     """
+    data = expt['data']
     
     h = data.dims.Y
     w = data.dims.X
