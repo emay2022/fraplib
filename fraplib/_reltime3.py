@@ -2,8 +2,9 @@ import numpy as np
 import pandas as pd
 
 def relt(expt, relative_to_time = None):
-     """
-    creates an array of image acquisition times in seconds relative to the specified time (default = first image acquired).
+    """
+    creates an array of image acquisition times in seconds relative to the specified time.
+    default is to first image acquired.
     
     Parameters
     ----------
@@ -14,10 +15,9 @@ def relt(expt, relative_to_time = None):
     
     Returns
     -------
-    times : np.ndarray
+    times : np.ndarray    
     """
-    data = expt['data']
-    md = expt['md']
+    
     sb = expt['sb']
     atch = expt['atch']
     
