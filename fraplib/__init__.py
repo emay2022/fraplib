@@ -6,8 +6,6 @@ __author__ = "Elizabeth May"
 __email__ = "ejmay2012@gmail.com"
 
 from ._loading import load_data
-from ._reltime import reltimes_fromAttach
-from ._reltime import reltimes_fromSubblocks
 from ._reltime2 import reltimes
 from ._falsecolor import make_colormap
 from ._falsecolor import falsecolor
@@ -28,6 +26,7 @@ from ._expfit import fit_curve
 from ._expfit import rhalf
 from ._expfit import thalf
 from ._expfit import Dcoeff
+from ._reltime3 import relt
 
 
 
@@ -36,9 +35,6 @@ __all__ = [
     "__author__",
     "__email__",
     "load_data",
-    "frame_times",
-    "reltimes_fromAttach",
-    "reltimes_fromSubBlocks",
     "reltimes",
     "make_colormap",
     "falsecolor",
@@ -54,5 +50,6 @@ __all__ = [
     "fit_curve",
     "rhalf",
     "thalf",
-    "Dcoeff"
+    "Dcoeff",
+    "relt"
 ]
