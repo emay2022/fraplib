@@ -36,7 +36,7 @@ def relt(expt, relative_to_time = None):
     
     return times
 
-def postbleach(expt):
+def get_postbleach_t(expt):
     """
     """
     
@@ -46,7 +46,7 @@ def postbleach(expt):
     
     return use_times
 
-def prebleach(expt):
+def get_prebleach_t(expt):
     """
     """
     
