@@ -1,7 +1,7 @@
 import czifile
 from pathlib import Path
 import numpy as np
-from aicsimageio import AICSImage # https://github.com/AllenCellModeling/aicsimageio
+from aicsimageio.readers import CziReader # https://github.com/AllenCellModeling/aicsimageio
 
 def load_data(path):
     """
@@ -69,7 +69,7 @@ def load_data(path):
             'event description' : evdesc
         }
 
-    data = AICSImage(str(Path(path).resolve()))
+    data = CziReader(str(Path(path).resolve()), include_subblock_metadata=True)
     
     ## regions
     test = metadata['ImageDocument']['Metadata']['Layers']['Layer']
