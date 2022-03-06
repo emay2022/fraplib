@@ -71,9 +71,35 @@ def load_data(path):
 
     data = AICSImage(str(Path(path).resolve()))
     
+    ## regions
+    test = metadata['ImageDocument']['Metadata']['Layers']['Layer']
+    
+    if isinstance(test, list):
+        
+        print("Warning: there are multiple regions in this experiment. Use print(expt['roi']) to display.")
+        roi = []
+        
+        for i in range(len(test)):
+            
+            x = metadata['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements']['Circle']['Geometry']['CenterX']
+            y = metadata['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements']['Circle']['Geometry']['CenterY']
+            r = metadata['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements']['Circle']['Geometry']['Radius']
+            
+            roi.append({'X': x, 'Y': y, 'R': r})
+            
+    else:
+        
+        x = metadata['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle']['Geometry']['CenterX']
+        y = metadata['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle']['Geometry']['CenterY']
+        r = metadata['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle']['Geometry']['Radius']
+        
+        roi = {'X': x, 'Y': y, 'R': r}
+    
     expt = {'data' : data,
             'md' : metadata,
             'sb' : subblocks,
-            'atch' : attachments}
+            'atch' : attachments,
+            'roi' : roi
+           }
 
     return expt
