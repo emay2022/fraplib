@@ -68,32 +68,40 @@ def load_data(path):
             'event time' : evtime, 
             'event description' : evdesc
         }
-
-    data = CziReader(str(Path(path).resolve()), include_subblock_metadata=True)
+    try:
+        data = CziReader(str(Path(path).resolve()), include_subblock_metadata=True)
+        test = data.metadata
+    except:
+        data = CziReader(str(Path(path).resolve()), include_subblock_metadata=False)
+        print('warning: due to exception, subblock metadata not appended.')
     
     ## regions
-    test = metadata['ImageDocument']['Metadata']['Layers']['Layer']
-    
-    if isinstance(test, list):
-        
-        print("Warning: there are multiple regions in this experiment. Use print(expt['roi']) to display.")
-        roi = []
-        
-        for i in range(len(test)):
-            
-            x = metadata['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements']['Circle']['Geometry']['CenterX']
-            y = metadata['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements']['Circle']['Geometry']['CenterY']
-            r = metadata['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements']['Circle']['Geometry']['Radius']
-            
-            roi.append({'X': x, 'Y': y, 'R': r})
-            
-    else:
-        
-        x = metadata['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle']['Geometry']['CenterX']
-        y = metadata['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle']['Geometry']['CenterY']
-        r = metadata['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle']['Geometry']['Radius']
-        
-        roi = {'X': x, 'Y': y, 'R': r}
+    roi = {}
+    count = 1
+    for element in data.metadata.findall(".//Elements/"):
+        # print(element.tag)
+        if count < 10:
+            roi[element.tag+'_0'+str(count)] = {}
+        else:
+            roi[element.tag+'_'+str(count)] = {}
+
+        for lement in element.findall(".//Geometry/"):
+            if element.tag == 'Circle':
+                tag_list = ['CenterX', 'CenterY', 'Radius']
+            elif element.tag == 'Rectangle': # made-up example
+                tag_list = ['CenterX', 'CenterY', 'Width', 'Height']
+            elif element.tag == 'Other': # to fill in
+                tag_list = ['other', 'tags', 'here']
+            else:
+                tag_list = [lement.tag]
+
+            if lement.tag in tag_list:
+                # print('\t', lement.tag, lement.attrib, lement.text)
+                if count < 10:
+                    roi[element.tag+'_0'+str(count)][lement.tag] = lement.text
+                else:
+                    roi[element.tag+'_'+str(count)][lement.tag] = lement.text
+        count = count+1
     
     expt = {'data' : data,
             'md' : metadata,
