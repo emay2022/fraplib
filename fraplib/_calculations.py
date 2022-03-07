@@ -1,4 +1,5 @@
 import numpy as np
+from fraplib import roi_mask
 
 def _extract(expt, mask):
     """
@@ -99,3 +100,17 @@ def get_data_for_fit(expt, mask):
     data_for_fit = norm_inside[1:,:,:]
     
     return data_for_fit
+
+def get_data_for_fit(expt, mask = None):
+    """
+    """
+    msk = roi_mask(expt, mask)
+    
+    if isinstance(msk, dict):
+        print('please choose a single mask for analysis.')
+    else:
+        extract = expt['data'].data[...,msk]
+        sume = extract.sum(axis = -1).squeeze()
+        meane = extract.mean(axis = -1).squeeze()
+        stdeve = extract.std(axis = -1).squeeze()
+    return meane, stdeve, sume
