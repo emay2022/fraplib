@@ -14,6 +14,7 @@ from ._scalebar2 import scalebar2
 from ._timestamp import timestamp
 from ._regions import get_roi
 from ._circular_mask import create_circular_mask
+from ._circular_mask import roi_mask
 from ._regions import draw_circle
 from ._calculations import _extract
 from ._calculations import _sum_extract

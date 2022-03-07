@@ -98,9 +98,9 @@ def load_data(path):
             if lement.tag in tag_list:
                 # print('\t', lement.tag, lement.attrib, lement.text)
                 if count < 10:
-                    roi[element.tag+'_0'+str(count)][lement.tag] = lement.text
+                    roi[element.tag+'_0'+str(count)][lement.tag] = float(lement.text)
                 else:
-                    roi[element.tag+'_'+str(count)][lement.tag] = lement.text
+                    roi[element.tag+'_'+str(count)][lement.tag] = float(lement.text)
         count = count+1
     
     expt = {'data' : data,
