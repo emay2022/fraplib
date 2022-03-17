@@ -33,7 +33,8 @@ def relt(expt, relative_to_time = None):
             relative_to_index = 0
             times = t - t[relative_to_index]
     else:
-        times = t - relative_to_time
+        t2 = t - t[0]
+        times = t2 - relative_to_time
     
     return times
 
