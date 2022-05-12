@@ -1,55 +1,88 @@
 import numpy as np
-import czifile
-import pandas as pd
 
-def reltimes_fromAttach(file, relative_to = 0):
+
+def relt(expt, relative_to_time=None):
     """
-    converts an array of image acquisition times in seconds to an array of times relative to the first aquisition time by default; relative to the n-th image acquired by specifiying the index of the n-th image in the 'relative_to' argument.
-    
+    creates an array of image acquisition times in seconds relative to the specified time.
+    default is to bleach end (if bleach exists) or first image acquired (if bleach doesn't exist).
+
     Parameters
     ----------
-    file : CziFile
-    
+    expt : dict
+        output of load_data
+    relative_to_time : float
+        a particular time
+
     Returns
     -------
     times : np.ndarray
-    
     """
-    for segment in file.segments():
-        if isinstance(segment, czifile.AttachmentSegment):
-            if segment.attachment_entry.name == 'TimeStamps':
-                timestamps = segment.data()
-    
+
+    atch = expt['atch']
+
+    timestamps = expt['atch']['TimeStamps']
     t = np.asarray(timestamps)
-    
-    times = t - t[relative_to]
-    
+
+    if relative_to_time is None:
+        if 'EventList' in atch and 'BLEACH_STOP' in atch['EventList']['event type']:
+            time = atch['EventList']['event time'][
+                atch['EventList']['event type'].index('BLEACH_STOP')
+            ]
+            times = t - time
+        else:
+            print(
+                'warning: times not relative to bleach end because bleach not detected in Event List.'
+            )
+            relative_to_index = 0
+            times = t - t[relative_to_index]
+    else:
+        t2 = t - t[0]
+        times = t2 - relative_to_time
+
     return times
 
-def reltimes_fromSubblocks(subblocks, relative_to = 0):
+
+def get_postbleach_t(expt, relative_to_time=None):
     """
-    creates an array of image acquisition times in seconds relative to the aquisition time of the first image acquired by default; relative to the n-th image acquired by specifiying the index of the n-th image in the 'relative_to' argument.
-    
+    creates an array containing the subset of image acquisition timestamps after bleach end in an experiment that includes bleaching.
+
     Parameters
     ----------
-    subblocks: dict
-        output of load_data; dict with pixel data for each image under key "images" and other info for each image under key "image_metadata"
-    relative_to: index
-    
+    experiment : dict
+        output of load_data
+    relative_to_time : float
+        a particular time
+
     Returns
     -------
-    times : np.ndarray
+    use_times : np.ndarray
     """
-    
-    t_list = [
-        pd.to_datetime(elem['Tags']['AcquisitionTime'])
-        for elem in subblocks['image_metadata']
-    ]
-    
-    dt_tlist = pd.to_datetime(t_list)
-    dt_reltot = pd.to_datetime(t_list[relative_to])
-    
-    times = (dt_tlist - dt_reltot) / pd.Timedelta(seconds=1)
-    times = times.to_numpy()
-    
-    return times
+
+    times = relt(expt, relative_to_time)
+
+    use_times = times[times >= 0]
+
+    return use_times
+
+
+def get_prebleach_t(expt, relative_to_time=None):
+    """
+    creates an array containing the subset of image acquisition timestamps before bleach end in an experiment that includes bleaching.
+
+    Parameters
+    ----------
+    experiment : dict
+        output of load_data
+    relative_to_time : float
+        a particular time
+
+    Returns
+    -------
+    use_times : np.ndarray
+    """
+
+    times = relt(expt, relative_to_time)
+
+    use_times = times[times < 0]
+
+    return use_times

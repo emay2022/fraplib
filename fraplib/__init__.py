@@ -5,33 +5,23 @@ except ImportError:
 __author__ = "Elizabeth May"
 __email__ = "ejmay2012@gmail.com"
 
+from ._calculations import (
+    _extract,
+    _mean_extract,
+    _norm_extract,
+    _sum_extract,
+    get_data_for_fit,
+)
+from ._circular_mask import create_circular_mask, roi_mask
+from ._expfit import Dcoeff, exp, fit_curve, fit_params, rhalf, thalf
+from ._falsecolor import falsecolor, make_colormap
 from ._loading import load_data
+from ._regions import draw_circle, get_roi
 from ._reltime2 import reltimes
-from ._falsecolor import make_colormap
-from ._falsecolor import falsecolor
+from ._reltime3 import get_postbleach_t, get_prebleach_t, relt
 from ._scalebar import scalebar
 from ._scalebar2 import scalebar2
 from ._timestamp import timestamp
-from ._regions import get_roi
-from ._circular_mask import create_circular_mask
-from ._circular_mask import roi_mask
-from ._regions import draw_circle
-from ._calculations import _extract
-from ._calculations import _sum_extract
-from ._calculations import _mean_extract
-from ._calculations import _norm_extract
-from ._calculations import get_data_for_fit
-from ._expfit import exp
-from ._expfit import fit_params
-from ._expfit import fit_curve
-from ._expfit import rhalf
-from ._expfit import thalf
-from ._expfit import Dcoeff
-from ._reltime3 import relt
-from ._reltime3 import get_postbleach_t
-from ._reltime3 import get_prebleach_t
-
-
 
 __all__ = [
     "__version__",
@@ -56,5 +46,5 @@ __all__ = [
     "Dcoeff",
     "relt",
     "get_postbleach_t",
-    "get_prebleach_t"
+    "get_prebleach_t",
 ]
