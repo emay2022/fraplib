@@ -1,5 +1,4 @@
 import numpy as np
-from fraplib import roi_mask
 
 def _extract(expt, mask):
     """
@@ -57,9 +56,11 @@ def _mean_extract(expt, mask):
     mean_inside: np.ndarray
     """
     
+    extract = _extract(expt, mask)
     sum_inside = _sum_extract(expt, mask)
     px_inside = np.sum(mask)
     mean_inside = sum_inside/px_inside
+    stdev_inside = extract.std(axis = (-1,-2))
     
     return mean_inside
 
@@ -100,18 +101,3 @@ def get_data_for_fit(expt, mask):
     data_for_fit = norm_inside[1:,:,:]
     
     return data_for_fit
-
-def get_data_for_fit(expt, mask_key = None):
-    """
-    """
-    msk = roi_mask(expt, mask_key)
-    
-    if isinstance(msk, dict):
-        print('please choose a single mask for analysis.')
-        print(list(msk.keys()))
-    else:
-        extract = expt['data'].data[...,msk]
-        sume = extract.sum(axis = -1).squeeze()
-        meane = extract.mean(axis = -1).squeeze()
-        stdeve = extract.std(axis = -1).squeeze()
-    return meane, stdeve, sume, extract
