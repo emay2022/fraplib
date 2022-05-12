@@ -1,10 +1,11 @@
-from matplotlib import pyplot as plt
 import matplotlib.patches as patches
+from matplotlib import pyplot as plt
 
-def scalebar2(length, data, ax = None, color = None):
+
+def scalebar2(length, data, ax=None, color=None):
     """
     adds a scale bar to a plot
-    
+
     Parameters
     ----------
     length : number
@@ -15,20 +16,20 @@ def scalebar2(length, data, ax = None, color = None):
         axes object on which to put the scale bar
     color : str
     """
-    
-    pxsize = data.physical_pixel_sizes.X/10
+
+    pxsize = data.physical_pixel_sizes.X / 10
     yheight = data.dims.Y
     xwidth = data.dims.X
-    
+
     if ax is None:
         ax = plt.gca()
-    
+
     if color is None:
         color = next(ax._get_lines.prop_cycler)['color']
-    
-    px_length = length/pxsize
-    fractional = px_length/xwidth
-    
+
+    px_length = length / pxsize
+    fractional = px_length / xwidth
+
     # build a rectangle in axes coords
     left, width = 0.9 - fractional, fractional
     bottom, height = 0.1, 0.02
@@ -37,9 +38,12 @@ def scalebar2(length, data, ax = None, color = None):
 
     # axes coordinates: (0, 0) is bottom left and (1, 1) is upper right
     p = patches.Rectangle(
-        (left, bottom), width, height,
-        facecolor = color, edgecolor = None,
-        transform=ax.transAxes
-        )
+        (left, bottom),
+        width,
+        height,
+        facecolor=color,
+        edgecolor=None,
+        transform=ax.transAxes,
+    )
 
     ax.add_patch(p)

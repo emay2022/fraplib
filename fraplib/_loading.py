@@ -1,7 +1,11 @@
-import czifile
 from pathlib import Path
+
+import czifile
 import numpy as np
-from aicsimageio.readers import CziReader # https://github.com/AllenCellModeling/aicsimageio
+from aicsimageio.readers import (  # https://github.com/AllenCellModeling/aicsimageio
+    CziReader,
+)
+
 
 def load_data(path):
     """
@@ -20,13 +24,13 @@ def load_data(path):
     subblocks : dict
     attachments: dict
     """
-    
+
     file = czifile.CziFile(str(Path(path).resolve()))
-    
+
     for segment in file.segments():
         if isinstance(segment, czifile.MetadataSegment):
-            metadata = segment.data(raw=False) # a dictionary
-    
+            metadata = segment.data(raw=False)  # a dictionary
+
     subblocks = {
         "images": [
             segment.data()
@@ -36,37 +40,37 @@ def load_data(path):
         "image_metadata": [
             segment.metadata()
             for segment in file.segments()
-            if isinstance(segment, czifile.SubBlockSegment) 
+            if isinstance(segment, czifile.SubBlockSegment)
             # and segment.metadata() is not None
         ],
     }
-    
+
     attachments = {
-        segment.attachment_entry.name : segment.data()
+        segment.attachment_entry.name: segment.data()
         for segment in file.segments()
         if isinstance(segment, czifile.AttachmentSegment)
     }
-    
+
     if 'EventList' in attachments:
         evtype = [
-            entry.EV_TYPE[entry.event_type] 
-            for entry in attachments['EventList'] 
+            entry.EV_TYPE[entry.event_type]
+            for entry in attachments['EventList']
             if isinstance(entry, czifile.EventListEntry)
         ]
         evtime = [
-            entry.time 
-            for entry in attachments['EventList'] 
+            entry.time
+            for entry in attachments['EventList']
             if isinstance(entry, czifile.EventListEntry)
         ]
         evdesc = [
-            entry.description 
-            for entry in attachments['EventList'] 
+            entry.description
+            for entry in attachments['EventList']
             if isinstance(entry, czifile.EventListEntry)
         ]
         attachments['EventList'] = {
-            'event type' : evtype, 
-            'event time' : evtime, 
-            'event description' : evdesc
+            'event type': evtype,
+            'event time': evtime,
+            'event description': evdesc,
         }
     try:
         data = CziReader(str(Path(path).resolve()), include_subblock_metadata=True)
@@ -74,23 +78,23 @@ def load_data(path):
     except:
         data = CziReader(str(Path(path).resolve()), include_subblock_metadata=False)
         print('warning: due to exception, subblock metadata not appended.')
-    
+
     ## regions
     roi = {}
     count = 1
     for element in data.metadata.findall(".//Elements/"):
         # print(element.tag)
         if count < 10:
-            roi[element.tag+'_0'+str(count)] = {}
+            roi[element.tag + '_0' + str(count)] = {}
         else:
-            roi[element.tag+'_'+str(count)] = {}
+            roi[element.tag + '_' + str(count)] = {}
 
         for lement in element.findall(".//Geometry/"):
             if element.tag == 'Circle':
                 tag_list = ['CenterX', 'CenterY', 'Radius']
-            elif element.tag == 'Rectangle': # made-up example
+            elif element.tag == 'Rectangle':  # made-up example
                 tag_list = ['CenterX', 'CenterY', 'Width', 'Height']
-            elif element.tag == 'Other': # to fill in
+            elif element.tag == 'Other':  # to fill in
                 tag_list = ['other', 'tags', 'here']
             else:
                 tag_list = [lement.tag]
@@ -98,16 +102,19 @@ def load_data(path):
             if lement.tag in tag_list:
                 # print('\t', lement.tag, lement.attrib, lement.text)
                 if count < 10:
-                    roi[element.tag+'_0'+str(count)][lement.tag] = float(lement.text)
+                    roi[element.tag + '_0' + str(count)][lement.tag] = float(
+                        lement.text
+                    )
                 else:
-                    roi[element.tag+'_'+str(count)][lement.tag] = float(lement.text)
-        count = count+1
-    
-    expt = {'data' : data,
-            'md' : metadata,
-            'sb' : subblocks,
-            'atch' : attachments,
-            'roi' : roi
-           }
+                    roi[element.tag + '_' + str(count)][lement.tag] = float(lement.text)
+        count = count + 1
+
+    expt = {
+        'data': data,
+        'md': metadata,
+        'sb': subblocks,
+        'atch': attachments,
+        'roi': roi,
+    }
 
     return expt
