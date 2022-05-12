@@ -1,7 +1,8 @@
+import matplotlib.patches as patches
 from matplotlib import pyplot as plt
 
 
-def scalebar(length, data, ax=None, color=None, lw=1):
+def scalebar(length, data, ax=None, color=None):
     """
     adds a scale bar to a plot
 
@@ -14,7 +15,6 @@ def scalebar(length, data, ax=None, color=None, lw=1):
     ax : matplotlib.axes._subplots.AxesSubplot
         axes object on which to put the scale bar
     color : str
-    lw : float
     """
 
     pxsize = data.physical_pixel_sizes.X / 10
@@ -30,11 +30,20 @@ def scalebar(length, data, ax=None, color=None, lw=1):
     px_length = length / pxsize
     fractional = px_length / xwidth
 
-    ax.axhline(
-        y=yheight * 0.9,
-        xmin=0.9 - fractional,
-        solid_capstyle='butt',
-        linewidth=lw,
-        xmax=0.9,
-        color=color,
+    # build a rectangle in axes coords
+    left, width = 0.9 - fractional, fractional
+    bottom, height = 0.1, 0.02
+    right = left + width
+    top = bottom + height
+
+    # axes coordinates: (0, 0) is bottom left and (1, 1) is upper right
+    p = patches.Rectangle(
+        (left, bottom),
+        width,
+        height,
+        facecolor=color,
+        edgecolor=None,
+        transform=ax.transAxes,
     )
+
+    ax.add_patch(p)
