@@ -16,6 +16,7 @@ from ._circular_mask import create_circular_mask, roi_mask
 from ._expfit import Dcoeff, exp, fit_curve, fit_params, rhalf, thalf
 from ._falsecolor import falsecolor, make_colormap
 from ._loading import load_data
+from ._reltime import relt, get_postbleach_t, get_prebleach_t
 from ._regions import draw_circle, get_roi
 from ._scalebar import scalebar
 from ._timestamp import timestamp
