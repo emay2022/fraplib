@@ -2,7 +2,7 @@ import matplotlib.patches as patches
 from matplotlib import pyplot as plt
 
 
-def scalebar(length, scales, dims, ax=None, color=None, **kwargs):
+def scalebar(length, scales, dims, ax=None, color=None, label_on = False, **kwargs):
     """
     adds a scale bar to a plot
 
@@ -18,6 +18,8 @@ def scalebar(length, scales, dims, ax=None, color=None, **kwargs):
         axes object on which to put the scale bar
     color : str
         color of the scalebar
+    label_on : bool
+        text label under the scale bar on/off
     **kwargs : dict
         keyword arguments to pass to matplotlib.patches.Rectangle()
     
@@ -55,3 +57,11 @@ def scalebar(length, scales, dims, ax=None, color=None, **kwargs):
     )
 
     ax.add_patch(p)
+    
+    if label_on:
+        ax.text(left + fractional/2, bottom - bottom/2, r'$'+str(length)+'\ µm$',
+                horizontalalignment='center',
+                verticalalignment='center',
+                transform=ax.transAxes,
+                color = color
+               )
