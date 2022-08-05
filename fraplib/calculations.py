@@ -1,5 +1,7 @@
 import numpy as np
-from fraplib import get_events, get_timepoints, create_circular_mask
+from .attachments import get_events, get_timepoints
+from .metadatafunctions import get_regions
+from .circular_mask import create_circular_mask
 
 def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv = None):
     """
@@ -9,7 +11,7 @@ def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv 
         background = 0
     
     if mask is None:
-        circle = get_retions(datafile)[0]
+        circle = get_regions(datafile)[0]
         mask = create_circular_mask(imageseries, circle)
     
     # time and events
@@ -41,4 +43,4 @@ def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv 
     n = m/normfactor # all the datapoints
     npost = m[post]/normfactor # just the datapoints after the bleach
     
-    return tpost, npost, tpre, t, n, m, bsim
+    return tpost, npost, tpre, t, n, normfactor, m, bsim
