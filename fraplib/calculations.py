@@ -1,108 +1,44 @@
 import numpy as np
+from fraplib import get_events, get_timestamps, create_circular_mask
 
-
-def _extract(expt, mask):
+def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv = None):
     """
-    defines pixels within the roi
-
-    Parameters
-    ----------
-    data: aicsimageio.aics_image.AICSImage
-    mask: np.ndarray
-
-    Returns
-    -------
-    extract: np.ndarray
-
     """
-    data = expt['data']
-
-    images = data.data  # np.ndarray
-
-    extract = images * mask  # np.ndarray; same shape as images
-
-    return extract
-
-
-def _sum_extract(expt, mask):
-    """
-    sums roi pixel values across x and y for all T, C, Z
-
-    Parameters
-    ----------
-    data: aicsimageio.aics_image.AICSImage
-    mask: np.ndarray
-
-    Returns
-    -------
-    sum_inside: np.ndarray
-    """
-
-    extract = _extract(expt, mask)
-
-    sum_inside = extract.sum(axis=(-1, -2))
-
-    return sum_inside
-
-
-def _mean_extract(expt, mask):
-    """
-    gets average roi pixel value for all T, C, Z
-
-    Parameters
-    ----------
-    data: aicsimageio.aics_image.AICSImage
-    mask: np.ndarray
-
-    Returns
-    -------
-    mean_inside: np.ndarray
-    """
-
-    extract = _extract(expt, mask)
-    sum_inside = _sum_extract(expt, mask)
-    px_inside = np.sum(mask)
-    mean_inside = sum_inside / px_inside
-    stdev_inside = extract.std(axis=(-1, -2))
-
-    return mean_inside
-
-
-def _norm_extract(expt, mask):
-    """
-    normalizes average roi pixel value all T, C, Z to average roi pixel value of pre-bleach frame (T[0])
-
-    Parameters
-    ----------
-    data: aicsimageio.aics_image.AICSImage
-    mask: np.ndarray
-
-    Returns
-    -------
-    norm_inside: np.ndarray
-    """
-
-    mean_inside = _mean_extract(expt, mask)
-    norm_inside = mean_inside / mean_inside[0, :, :]
-
-    return norm_inside
-
-
-def get_data_for_fit(expt, mask):
-    """
-    exlucdes pre-bleach frame (T[0]) from the array
-
-    Parameters
-    ----------
-    data: aicsimageio.aics_image.AICSImage
-    mask: np.ndarray
-
-    Returns
-    -------
-    data_for_fit: np.ndarray
-    """
-
-    norm_inside = _norm_extract(expt, mask)
-    data_for_fit = norm_inside[1:, :, :]
-
-    return data_for_fit
+    
+    if background is None:
+        background = 0
+    
+    if mask is None:
+        circle = get_retions(datafile)[0]
+        mask = create_circular_mask(imageseries, circle)
+    
+    # time and events
+    if bleachequiv is None:
+        bleach = get_events(datafile)['BLEACH_START']
+    else:
+        bleach = 0
+        nnorm = bleachequiv # number of frames to average for normalization when there is no bleach
+    
+    t, traw = get_timestamps(datafile)
+    pre = traw < bleach # bool
+    post = traw > bleach # bool
+    
+    tpost = t[post]
+    tpre = t[pre] - tpost.min()
+    tpost -= tpost.min()
+    
+    # background subtraction
+    bsim = imageseries - background # background-subtracted image
+    
+    # averaging pixels in bleach region
+    m = bsim[...,mask].mean(axis = -1) # mean of px in bleached region for each timepoint
+    
+    # normalization
+    if bleachequiv is None:
+        normfactor = m[pre].mean()
+    else:
+        normfactor = m[0:bleachequiv-1].mean()
+    n = m/normfactor # all the datapoints
+    npost = m[post]/normfactor # just the datapoints after the bleach
+    
+    return tpost, npost, tpre, t, n, m, bsim
