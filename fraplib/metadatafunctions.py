@@ -174,7 +174,7 @@ def get_regions(file, units = None):
             cx = float(md.findall('.//Circle//CenterX')[ind].text)
             cy = float(md.findall('.//Circle//CenterY')[ind].text)
             r = float(md.findall('.//Circle//Radius')[ind].text)
-            geom.append(cx, cy, r)
+            geom.append((cx, cy, r))
     
     return geom
 
