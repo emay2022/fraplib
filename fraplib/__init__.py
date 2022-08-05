@@ -5,44 +5,66 @@ except ImportError:
 __author__ = "Elizabeth May"
 __email__ = "ejmay2012@gmail.com"
 
-from ._calculations import (
+from ._setupfunction import _setup
+from .loading import load_data, batchread
+from .metadatafunctions import (
+    channel_label,
+    get_gain,
+    get_power,
+    get_objective,
+    get_em,
+    get_ex,
+    get_scales,
+    get_regions,
+    get_dims,
+)
+from .calculations import (
     _extract,
+    _sum_extract,
     _mean_extract,
     _norm_extract,
-    _sum_extract,
     get_data_for_fit,
 )
-from ._circular_mask import create_circular_mask, roi_mask
-from ._expfit import Dcoeff, exp, fit_curve, fit_params, rhalf, thalf
-from ._falsecolor import falsecolor, make_colormap
-from ._loading import load_data
-from ._reltime import relt, get_postbleach_t, get_prebleach_t
-from ._regions import draw_circle, get_roi
-from ._scalebar import scalebar
-from ._timestamp import timestamp
+from .circular_mask import create_circular_mask, roi_mask
+from .expfit import Dcoeff, exp, fit_curve, fit_params, rhalf, thalf
+from .falsecolor import falsecolor, make_colormap
+from .relativetime import relt, get_postbleach_t, get_prebleach_t
+from .regions import draw_circle, get_roi
+from .scalebar import scalebar
+from .timestamp import timestamp
 
 __all__ = [
     "__version__",
     "__author__",
     "__email__",
+    "_setup",
     "load_data",
-    "reltimes",
-    "make_colormap",
-    "falsecolor",
-    "scalebar",
-    "scalebar2",
-    "timestamp",
-    "get_roi",
-    "create_circular_mask",
-    "draw_circle",
+    "batchread",
+    "channel_label",
+    "get_gain",
+    "get_power",
+    "get_objective",
+    "get_em",
+    "get_ex",
+    "get_scales",
+    "get_regions",
+    "get_dims",
     "get_data_for_fit",
+    "create_circular_mask",
+    "roi_mask",
+    "Dcoeff",
     "exp",
-    "fit_params",
     "fit_curve",
+    "fit_params",
     "rhalf",
     "thalf",
-    "Dcoeff",
+    "falsecolor",
+    "make_colormap",
     "relt",
     "get_postbleach_t",
     "get_prebleach_t",
+    "draw_circle",
+    "get_roi",
+    "scalebar",
+    "timestamp",
 ]

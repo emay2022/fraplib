@@ -1,7 +1,6 @@
 from pathlib import Path
-
+import os
 import czifile
-import numpy as np
 from aicsimageio.readers import (  # https://github.com/AllenCellModeling/aicsimageio
     CziReader,
 )
@@ -118,3 +117,39 @@ def load_data(path):
     }
 
     return expt
+
+def batchread(directory):
+    """
+    Reads .czi files in directory into a data holder [holder].
+    
+    Parameters
+    ----------
+    directory : str
+        path to directory containing files of interest
+    
+    Returns
+    -------
+    holder : dict
+        keys correspond to a file name; values correspond to the data (type = CziFile)
+    pathholder : dict
+        keys correspond to a file name; values correspond to a path to the file (type = str)
+    """
+    
+    # directory = input_dir
+    
+    extension = '.czi'
+    
+    holder = {}
+    pathholder = {}
+    
+    for item in os.listdir(directory):
+        
+        f = os.path.join(directory, item)
+        
+        if os.path.isfile(f) and item[-4:] == extension:
+            
+            print(item)
+            holder[item] = czifile.CziFile(f)
+            pathholder[item] = f
+    
+    return holder, pathholder
