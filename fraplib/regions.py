@@ -9,10 +9,15 @@ def draw_circle(roi, ax = None, color = None, **kwargs):
     ----------
     roi : tuple
         (centerX, centerY, radius)
+    ax : matplotlib.axes._subplots.AxesSubplot
+        axes object on which to put the scale bar
+    color : str
+        color of the circle
+    **kwargs : dict
+        keyword arguments to pass to matplotlib.patches.Circle()
 
     Returns
     -------
-    circle : matplotlib.patches.Patch
     """
     
     if ax is None:
