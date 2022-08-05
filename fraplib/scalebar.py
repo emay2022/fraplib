@@ -2,7 +2,7 @@ import matplotlib.patches as patches
 from matplotlib import pyplot as plt
 
 
-def scalebar(length, data, ax=None, color=None):
+def scalebar(length, scales, dims, ax=None, color=None, **kwargs):
     """
     adds a scale bar to a plot
 
@@ -10,16 +10,24 @@ def scalebar(length, data, ax=None, color=None):
     ----------
     length : number
         desired scale bar length in image pixel units (typically microns)
-    data : aicsimageio.aics_image.AICSImage
-        source data of image on ax
+    scales : list
+        [x µm/px, y µm/px, z µm/px]
+    dims : list
+        [x px, y px]
     ax : matplotlib.axes._subplots.AxesSubplot
         axes object on which to put the scale bar
     color : str
+        color of the scalebar
+    **kwargs : dict
+        keyword arguments to pass to matplotlib.patches.Rectangle()
+    
+    Returns
+    -------
     """
 
-    pxsize = data.physical_pixel_sizes.X / 10
-    yheight = data.dims.Y
-    xwidth = data.dims.X
+    pxsize = scales[0] # x µm/px
+    xpx = dims[0]
+    ypx = dims[1]
 
     if ax is None:
         ax = plt.gca()
@@ -28,7 +36,7 @@ def scalebar(length, data, ax=None, color=None):
         color = next(ax._get_lines.prop_cycler)['color']
 
     px_length = length / pxsize
-    fractional = px_length / xwidth
+    fractional = px_length / xpx
 
     # build a rectangle in axes coords
     left, width = 0.9 - fractional, fractional
