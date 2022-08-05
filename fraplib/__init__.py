@@ -19,13 +19,13 @@ from .metadatafunctions import (
     get_dims,
 )
 from .attachments import get_events, get_timepoints
-from .calculations import (
-    _extract,
-    _sum_extract,
-    _mean_extract,
-    _norm_extract,
-    get_data_for_fit,
-)
+# from .calculations import (
+#     _extract,
+#     _sum_extract,
+#     _mean_extract,
+#     _norm_extract,
+#     get_data_for_fit,
+# )
 from .circular_mask import create_circular_mask
 from .expfit import Dcoeff, exp, fit_curve, fit_params, rhalf, thalf
 from .falsecolor import falsecolor, make_colormap
@@ -52,7 +52,6 @@ __all__ = [
     "get_dims",
     "get_events",
     "get_timepoints",
-    "get_data_for_fit",
     "create_circular_mask",
     "Dcoeff",
     "exp",
