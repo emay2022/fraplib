@@ -25,7 +25,7 @@ from .calculations import (
     _norm_extract,
     get_data_for_fit,
 )
-from .circular_mask import create_circular_mask, roi_mask
+from .circular_mask import create_circular_mask
 from .expfit import Dcoeff, exp, fit_curve, fit_params, rhalf, thalf
 from .falsecolor import falsecolor, make_colormap
 from .relativetime import relt, get_postbleach_t, get_prebleach_t
@@ -51,7 +51,6 @@ __all__ = [
     "get_dims",
     "get_data_for_fit",
     "create_circular_mask",
-    "roi_mask",
     "Dcoeff",
     "exp",
     "fit_curve",
