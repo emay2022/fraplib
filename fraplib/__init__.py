@@ -18,6 +18,7 @@ from .metadatafunctions import (
     get_regions,
     get_dims,
 )
+from .attachments import get_events, get_timepoints
 from .calculations import (
     _extract,
     _sum_extract,
@@ -49,6 +50,8 @@ __all__ = [
     "get_scales",
     "get_regions",
     "get_dims",
+    "get_events",
+    "get_timepoints",
     "get_data_for_fit",
     "create_circular_mask",
     "Dcoeff",
