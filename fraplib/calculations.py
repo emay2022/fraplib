@@ -1,5 +1,5 @@
 import numpy as np
-from fraplib import get_events, get_timestamps, create_circular_mask
+from fraplib import get_events, get_timepoints, create_circular_mask
 
 def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv = None):
     """
@@ -19,7 +19,7 @@ def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv 
         bleach = 0
         nnorm = bleachequiv # number of frames to average for normalization when there is no bleach
     
-    t, traw = get_timestamps(datafile)
+    t, traw = get_timepoints(datafile)
     pre = traw < bleach # bool
     post = traw > bleach # bool
     
