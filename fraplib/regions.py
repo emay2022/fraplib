@@ -1,77 +1,30 @@
-def get_roi(expt):
-    """
-    gets the regions of interest from the metadata
-
-    Parameters
-    ----------
-    md : dict
-        metadata
-
-    Returns
-    -------
-    roi : list or dict
-    """
-
-    md = expt['md']
-    test = md['ImageDocument']['Metadata']['Layers']['Layer']
-
-    if isinstance(test, list):
-
-        roi = []
-
-        for i in range(len(test)):
-
-            x = md['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements'][
-                'Circle'
-            ]['Geometry']['CenterX']
-            y = md['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements'][
-                'Circle'
-            ]['Geometry']['CenterY']
-            r = md['ImageDocument']['Metadata']['Layers']['Layer'][i]['Elements'][
-                'Circle'
-            ]['Geometry']['Radius']
-
-            roi.append({'X': x, 'Y': y, 'R': r})
-
-    else:
-
-        x = md['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle'][
-            'Geometry'
-        ]['CenterX']
-        y = md['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle'][
-            'Geometry'
-        ]['CenterY']
-        r = md['ImageDocument']['Metadata']['Layers']['Layer']['Elements']['Circle'][
-            'Geometry'
-        ]['Radius']
-
-        roi = {'X': x, 'Y': y, 'R': r}
-
-    return roi
-
-
 from matplotlib import pyplot as plt
-from matplotlib.patches import Ellipse
+import matplotlib.patches as patches
 
-
-def draw_circle(roi):
+def draw_circle(roi, ax = None, color = None, **kwargs):
     """
     adds a circle corresponding to roi onto an image
 
     Parameters
     ----------
-    roi: dict
-        with keys: {'X': x, 'Y': y, 'R': r}
+    roi : tuple
+        (centerX, centerY, radius)
 
     Returns
     -------
     circle : matplotlib.patches.Patch
     """
+    
+    if ax is None:
+        ax = plt.gca()
+    
+    if color is None:
+        color = next(ax._get_lines.prop_cycler)['color']
+    
+    x = roi[0]
+    y = roi[1]
+    r = roi[2]
 
-    x = roi['X']
-    y = roi['Y']
-    r = roi['R']
-
-    circle = plt.Circle((x, y), r, facecolor='none', edgecolor='y', linewidth=1)
-
-    return circle
+    c = patches.Circle((x, y), r, facecolor='none', edgecolor=color, **kwargs)
+    
+    ax.add_patch(c)
