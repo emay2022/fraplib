@@ -1,9 +1,6 @@
 from pathlib import Path
 import os
 import czifile
-from aicsimageio.readers import (  # https://github.com/AllenCellModeling/aicsimageio
-    CziReader,
-)
 
 
 def load_data(path):
@@ -17,18 +14,15 @@ def load_data(path):
 
     Returns
     -------
-    data : aicsimageio.aics_image.AICSImage
-    file : czifile.CziFile
-    metadata : dict
+    file : CziFile
+        original data file in CziFile format
     subblocks : dict
-    attachments: dict
+        { images : array, immd : str }
+        # check if subblocks["images"] is really an array
+        # check if subblocks["immd"] is really str
     """
 
     file = czifile.CziFile(str(Path(path).resolve()))
-
-    for segment in file.segments():
-        if isinstance(segment, czifile.MetadataSegment):
-            metadata = segment.data(raw=False)  # a dictionary
 
     subblocks = {
         "images": [
@@ -36,87 +30,15 @@ def load_data(path):
             for segment in file.segments()
             if isinstance(segment, czifile.SubBlockSegment)
         ],
-        "image_metadata": [
+        "immd": [ # image-specific metadata
             segment.metadata()
             for segment in file.segments()
             if isinstance(segment, czifile.SubBlockSegment)
             # and segment.metadata() is not None
         ],
     }
-
-    attachments = {
-        segment.attachment_entry.name: segment.data()
-        for segment in file.segments()
-        if isinstance(segment, czifile.AttachmentSegment)
-    }
-
-    if 'EventList' in attachments:
-        evtype = [
-            entry.EV_TYPE[entry.event_type]
-            for entry in attachments['EventList']
-            if isinstance(entry, czifile.EventListEntry)
-        ]
-        evtime = [
-            entry.time
-            for entry in attachments['EventList']
-            if isinstance(entry, czifile.EventListEntry)
-        ]
-        evdesc = [
-            entry.description
-            for entry in attachments['EventList']
-            if isinstance(entry, czifile.EventListEntry)
-        ]
-        attachments['EventList'] = {
-            'event type': evtype,
-            'event time': evtime,
-            'event description': evdesc,
-        }
-    try:
-        data = CziReader(str(Path(path).resolve()), include_subblock_metadata=True)
-        test = data.metadata
-    except:
-        data = CziReader(str(Path(path).resolve()), include_subblock_metadata=False)
-        print('warning: due to exception, subblock metadata not appended.')
-
-    ## regions
-    roi = {}
-    count = 1
-    for element in data.metadata.findall(".//Elements/"):
-        # print(element.tag)
-        if count < 10:
-            roi[element.tag + '_0' + str(count)] = {}
-        else:
-            roi[element.tag + '_' + str(count)] = {}
-
-        for lement in element.findall(".//Geometry/"):
-            if element.tag == 'Circle':
-                tag_list = ['CenterX', 'CenterY', 'Radius']
-            elif element.tag == 'Rectangle':  # made-up example
-                tag_list = ['CenterX', 'CenterY', 'Width', 'Height']
-            elif element.tag == 'Other':  # to fill in
-                tag_list = ['other', 'tags', 'here']
-            else:
-                tag_list = [lement.tag]
-
-            if lement.tag in tag_list:
-                # print('\t', lement.tag, lement.attrib, lement.text)
-                if count < 10:
-                    roi[element.tag + '_0' + str(count)][lement.tag] = float(
-                        lement.text
-                    )
-                else:
-                    roi[element.tag + '_' + str(count)][lement.tag] = float(lement.text)
-        count = count + 1
-
-    expt = {
-        'data': data,
-        'md': metadata,
-        'sb': subblocks,
-        'atch': attachments,
-        'roi': roi,
-    }
-
-    return expt
+    
+    return file, subblocks
 
 def batchread(directory):
     """
@@ -148,8 +70,9 @@ def batchread(directory):
         
         if os.path.isfile(f) and item[-4:] == extension:
             
-            print(item)
-            holder[item] = czifile.CziFile(f)
+            # print(item)
+            file, _ = load_data(f)
+            holder[item] = file
             pathholder[item] = f
     
     return holder, pathholder
