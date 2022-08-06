@@ -1,5 +1,6 @@
 import czifile
 import xml.etree.ElementTree as et
+import numpy as np
 
 
 def channel_label(file):
@@ -174,6 +175,7 @@ def get_regions(file, units=None):
     ----------
     file : CziFile
         original data file
+    units : str
 
     Returns
     -------
@@ -197,6 +199,12 @@ def get_regions(file, units=None):
             cx = float(md.findall(".//Circle//CenterX")[ind].text)
             cy = float(md.findall(".//Circle//CenterY")[ind].text)
             r = float(md.findall(".//Circle//Radius")[ind].text)
+            
+            if units == 'microns' or units == 'micrometers':
+                cx /= 1E-6
+                cy /= 1E-6
+                r /= 1E-6
+            
             geom.append((cx, cy, r))
 
     return geom
