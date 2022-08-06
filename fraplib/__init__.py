@@ -21,9 +21,8 @@ from .metadatafunctions import (
 from .attachments import get_events, get_timepoints
 from .calculations import evaluate
 from .circular_mask import create_circular_mask
-from .expfit import Dcoeff, exp, fit_curve, fit_params, rhalf, thalf
+from .expb2 import Dcoeff, rhalf, thalf
 from .falsecolor import falsecolor, make_colormap
-from .relativetime import relt, get_postbleach_t, get_prebleach_t
 from .regions import draw_circle
 from .scalebar import scalebar
 from .timestamp import timestamp
@@ -49,16 +48,10 @@ __all__ = [
     "get_timepoints",
     "create_circular_mask",
     "Dcoeff",
-    "exp",
-    "fit_curve",
-    "fit_params",
     "rhalf",
     "thalf",
     "falsecolor",
     "make_colormap",
-    "relt",
-    "get_postbleach_t",
-    "get_prebleach_t",
     "draw_circle",
     "scalebar",
     "timestamp",
