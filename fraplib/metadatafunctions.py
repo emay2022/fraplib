@@ -29,7 +29,10 @@ def channel_label(file):
         else:
             chlabels.append("Transmitted Light")
             nTL += 1
-
+    
+    if len(chlabels) == 1:
+        chlabels = chlabels[0]
+    
     return chlabels
 
 
@@ -50,7 +53,10 @@ def get_gain(file):
 
     md = et.fromstring(file.metadata())
     gains = [round(float(elem.text)) for elem in md.findall(".//Dimensions//Gain")]
-
+    
+    if len(gains) == 1:
+        gains = gains[0]
+    
     return gains
 
 
@@ -74,7 +80,10 @@ def get_power(file):
         round(1 - float(elem.text), 2)
         for elem in md.findall(".//LightSourceSettings/Attenuation")
     ]
-
+    
+    if len(powers) == 1:
+        powers = powers[0]
+    
     return powers
 
 
@@ -119,7 +128,10 @@ def get_em(file):
         (float(elem.text.split("-")[0]), float(elem.text.split("-")[1]))
         for elem in md.findall(".//Ranges")
     ]
-
+    
+    if len(em) == 1:
+        em = em[0]
+    
     return em
 
 
@@ -139,13 +151,16 @@ def get_ex(file):
 
     md = et.fromstring(file.metadata())
     ex = [float(elem.text) for elem in md.findall(".//LightSourceSettings/Wavelength")]
+    
+    if len(ex) == 1:
+        ex = ex[0]
 
     return ex
 
 
 def get_scales(file):
     """
-    Grab the scaling info in all dimensions.
+    Grab the scaling info in all dimensions, in units of microns.
     
     Parameters
     ----------
@@ -160,10 +175,17 @@ def get_scales(file):
 
     md = et.fromstring(file.metadata())
     scales = {
-        each.attrib["Id"] + "-scale": float(each.findall("./Value")[0].text) / 1e-6
+        each.attrib["Id"] : float(each.findall("./Value")[0].text) / 1e-6
         for each in md.findall(".//Scaling/Items/Distance")
     }
 
+    
+    lst = list(zip( list(scales.keys()), list(scales.values() ))) # key : value pairs as list of tuples
+    def get_first(tup):
+        return tup[0]
+    lst.sort(key = get_first) # sort lst alphabetically by the first element of each tuple (the key from above); produces [('X', value), ('Y', value), ('Z', value)]
+    scales = [tup[1] for tup in lst] # list of values in X, Y, Z order
+    
     return scales
 
 
@@ -207,10 +229,13 @@ def get_regions(file, units=None):
             
             geom.append((cx, cy, r))
 
+    if len(geom) == 1:
+        geom = geom[0]
+    
     return geom
 
 
-def get_dims(file):
+def get_dims(file, specific = None):
     """
     Grabs the size of each dimension of the experiment.
 
@@ -218,17 +243,23 @@ def get_dims(file):
     ----------
     file : CziFile
         original data file
+    specific : str
+        e.g 'CZYX'
 
     Returns
     -------
-    dims : dict
-        {dimension_name : size}
+    dims : list
     """
 
     md = et.fromstring(file.metadata())
-    names = ["Size" + letter for letter in file.axes]  # list
+    names = [letter for letter in file.axes]  # list
     shape = file.asarray().shape  # tuple
 
     dims = {name: size for name, size in zip(names, shape)}
+    
+    if specific is None:
+        dims = [ dims[key] for key in dims if dims[key] > 1 ]
+    else:
+        dims = [dims[dim] for dim in specific]
 
     return dims
