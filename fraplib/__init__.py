@@ -26,6 +26,8 @@ from .falsecolor import falsecolor, make_colormap
 from .regions import draw_circle
 from .scalebar import scalebar
 from .timestamp import timestamp
+from .pretty_plot import pretty_plot
+from .onestep import analyze
 
 __all__ = [
     "__version__",
@@ -54,4 +56,6 @@ __all__ = [
     "draw_circle",
     "scalebar",
     "timestamp",
+    "pretty_plot",
+    "analyze"
 ]
