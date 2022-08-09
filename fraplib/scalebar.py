@@ -2,7 +2,7 @@ import matplotlib.patches as patches
 from matplotlib import pyplot as plt
 
 
-def scalebar(length, scales, dims, ax=None, color=None, label_on = False, **kwargs):
+def scalebar(length, im, im_scales, ax=None, color=None, label_on = False, **kwargs):
     """
     adds a scale bar to a plot
 
@@ -10,7 +10,9 @@ def scalebar(length, scales, dims, ax=None, color=None, label_on = False, **kwar
     ----------
     length : number
         desired scale bar length in image pixel units (typically microns)
-    scales : list
+    im : array
+        2- or 3-D image
+    im_scales : list
         [x µm/px, y µm/px, z µm/px]
     dims : list
         [x px, y px]
@@ -27,9 +29,9 @@ def scalebar(length, scales, dims, ax=None, color=None, label_on = False, **kwar
     -------
     """
 
-    pxsize = scales[0] # x µm/px
-    xpx = dims[0]
-    ypx = dims[1]
+    pxsize = im_scales[0] # x µm/px
+    xpx = im.shape[-1]
+    ypx = im.shape[-2]
 
     if ax is None:
         ax = plt.gca()
