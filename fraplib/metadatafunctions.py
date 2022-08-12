@@ -3,6 +3,32 @@ import xml.etree.ElementTree as et
 import numpy as np
 
 
+def version(file):
+    """
+    Get the CZI version from the metadata.
+    
+    Parameters
+    ----------
+    file : czifile
+        original data file
+    
+    Returns
+    -------
+    version : str
+    """
+    md = file.metadata()
+    mdt = et.fromstring(md)
+    
+    version = [elem.text for elem in mdt.findall('./Metadata/Version')]
+    
+    if version:
+        version = version[0]
+    else:
+        version = [elem.get('Version') for elem in mdt.findall('./Metadata/Experiment')][0]
+    
+    return version
+
+
 def channel_label(file):
     """
     Grabs the descriptive channel names from the metadata.
@@ -51,8 +77,27 @@ def get_gain(file):
         list of gain values
     """
 
+    v = version(file)
     md = et.fromstring(file.metadata())
-    gains = [round(float(elem.text)) for elem in md.findall(".//Dimensions//Gain")]
+    
+    if v == '1.0':
+        gains = [float(elem.text) for elem in md.findall(".//Dimensions//Gain")]
+    else:
+        channel = channel_label(file)
+        gains = []
+        for elem in md.findall('.//DetectorGain/../..'):
+            # print(elem.tag, elem.attrib)
+            a = elem.attrib
+            if 'Name' in a:
+                if isinstance(channel, str):
+                    if channel in a['Name']:
+                        # print(a['Name'])
+                        gains.append(float(elem.findall('.//DetectorGain')[0].text))
+                elif isinstance(channel, list):
+                    for chname in channel:
+                        if chname in a['Name']:
+                            # print(a['Name'])
+                            gains.append(float(elem.findall('.//DetectorGain')[0].text))
     
     if len(gains) == 1:
         gains = gains[0]
@@ -103,7 +148,11 @@ def get_objective(file):
     """
 
     md = et.fromstring(file.metadata())
-    objective = md.findall(".//Experiment//Objective")[0].text
+    v = version(file)
+    if v == '1.0':
+        objective = md.findall(".//Experiment//Objective")[0].text
+    else:
+        objective = [elem.attrib['Name'] for elem in md.findall('.//Objectives/Objective')][0]
 
     return objective
 

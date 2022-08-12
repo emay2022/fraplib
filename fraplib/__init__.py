@@ -8,6 +8,7 @@ __email__ = "ejmay2012@gmail.com"
 from ._setupfunction import _setup
 from .loading import load_data, batchread
 from .metadatafunctions import (
+    version,
     channel_label,
     get_gain,
     get_power,
