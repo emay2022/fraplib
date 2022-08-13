@@ -218,8 +218,8 @@ def get_scales(file):
     
     Returns
     -------
-    scales : dict
-        {'X-scale' : x µm/px, 'Y-scale' : y µm/px, 'Z-scale' : z µm/px}
+    scales : list
+        [x-scale, y-scale] or [x-scale, y-scale, z-scale], values in units of microns
     """
 
     md = et.fromstring(file.metadata())
@@ -240,7 +240,7 @@ def get_scales(file):
 
 def get_regions(file, units=None):
     """
-    Grabs the geometry of regions of interest specified during the experiment.
+    Grabs the geometry of regions of interest specified during the experiment. Currenltly works only for circles.
 
     Parameters
     ----------
@@ -255,16 +255,20 @@ def get_regions(file, units=None):
     """
 
     md = et.fromstring(file.metadata())
-    shapes = [elem.tag for elem in md.findall(".//Geometry/..")]
-    shape = shapes[::2]
-
-    # [0] : position in pixels; # [1] : position in microns
-    if units is None or units == "px" or units == "pix" or units == "pixels":
-        ind = 0
+    shapes = [elem.tag for elem in md.findall(".//Circle")]
+    
+    v = version(file)
+    
+    if v == '1.0':
+        shape = shapes[::2]
     else:
-        ind = 1
+        shape = shapes
 
+    xum = fraplib.get_scales(file)[0] # microns
+    yum = fraplib.get_scales(file)[1] # microns
+        
     geom = []
+    ind = 0
     for region in shape:
         if "Circle" in region:
             cx = float(md.findall(".//Circle//CenterX")[ind].text)
@@ -272,11 +276,13 @@ def get_regions(file, units=None):
             r = float(md.findall(".//Circle//Radius")[ind].text)
             
             if units == 'microns' or units == 'micrometers':
-                cx /= 1E-6
-                cy /= 1E-6
-                r /= 1E-6
+                
+                cx = cx * xum
+                cy = cy * yum
+                r = r * xum
             
             geom.append((cx, cy, r))
+            ind += 1 
 
     if len(geom) == 1:
         geom = geom[0]
