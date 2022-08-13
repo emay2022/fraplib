@@ -264,8 +264,8 @@ def get_regions(file, units=None):
     else:
         shape = shapes
 
-    xum = fraplib.get_scales(file)[0] # microns
-    yum = fraplib.get_scales(file)[1] # microns
+    xum = get_scales(file)[0] # microns
+    yum = get_scales(file)[1] # microns
         
     geom = []
     ind = 0
