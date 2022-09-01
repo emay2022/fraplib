@@ -46,7 +46,7 @@ def get_timepoints(file):
     """
     
     for atch in file.attachments():
-        if 'Time' in atch.attachment_entry.name:
+        if 'TimeStamps' in atch.attachment_entry.name:
             traw = atch.data()
     t = traw - traw.min()
     

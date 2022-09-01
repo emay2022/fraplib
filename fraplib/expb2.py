@@ -16,7 +16,14 @@ def fit_expD(xdata, ydata, radius, guesses):
     
     Returns
     -------
-    
+    xvals : array
+        x values for plotting fit
+    curve : array
+        y values for plotting fit
+    fit_result.params : ordered dict
+        estimates of model parameters
+    fit_result
+        output from symfit, including covariance matrix
     """
     
     x, y = variables('x, y')
@@ -25,16 +32,16 @@ def fit_expD(xdata, ydata, radius, guesses):
     r = Parameter('r', value = radius, fixed = True) # radius of region in microns
     amt = Parameter('amt', value = guesses[0]) # amount of bleaching
     D = Parameter('D', value = guesses[1]) # diffusion coefficient
-    immobile = Parameter('immobile', value = guesses[2]) # immobile fraction
+    immfr = Parameter('immfr', value = guesses[2]) # immobile fraction
 
     thalf = (
         0.224 * (r ** 2) * (D ** -1)
     )
     A = (
-        amt - immobile
+        amt - immfr
     )
     yoff = (
-        1 - immobile
+        1 - immfr
     )
     model = {
         y: yoff - (A * 2**(-x/(0.224 * (r ** 2) * (D ** -1))))
@@ -42,10 +49,11 @@ def fit_expD(xdata, ydata, radius, guesses):
 
     fit = Fit(model, xdata, ydata)
     fit_result = fit.execute()
-
-    curve = fit.model(x = xdata, **fit_result.params).output[0]
     
-    return curve, fit_result.params, fit_result
+    xvals = np.linspace(xdata.min(), xdata.max(), num = 100*len(xdata))
+    curve = fit.model(x = xvals, **fit_result.params).output[0]
+    
+    return xvals, curve, fit_result.params, fit_result
 
 def fit_expb2(xdata, ydata, guesses):
     """
@@ -60,8 +68,14 @@ def fit_expb2(xdata, ydata, guesses):
     
     Returns
     -------
-    y : array
-        calculated f(x) values
+    xvals : array
+        x values for plotting fit
+    curve : array
+        y values for plotting fit
+    fit_result.params : ordered dict
+        estimates of model parameters
+    fit_result
+        output from symfit, including covariance matrix
     """
     
     A, thalf, yoff = guesses # unpack
@@ -76,6 +90,7 @@ def fit_expb2(xdata, ydata, guesses):
     fit = Fit(model, xdata, ydata)
     fit_result = fit.execute()
     
-    curve = fit.model(x = xdata, **fit_result.params).output[0]
+    xvals = np.linspace(xdata.min(), xdata.max(), num = 100*len(xdata))
+    curve = fit.model(x = xvals, **fit_result.params).output[0]
     
-    return curve, fit_result.params
+    return xvals, curve, fit_result.params, fit_result

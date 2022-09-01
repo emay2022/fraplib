@@ -30,13 +30,16 @@ def pretty_plot(images, xdata, ydata, fitx, fity, experiment, name = None):
 
     left, right = axs
     cyan = (0,1,1)
+    dcyan = (0,0.8, 0.8)
     gray = 3*(0.7,)
 
-    right.scatter(xdata[xdata >= 0], ydata[xdata >= 0], label="data", color = cyan)
-    right.plot(fitx, fity, label="fit", color = cyan)
-    right.scatter(xdata, ydata, label="normalization data", color=gray, zorder = 0)
+    for cnt, series in enumerate(ydata):
+        right.scatter(xdata[xdata >= 0], series[xdata >= 0], label="data", color = cyan)
+        right.plot(fitx[cnt], fity[cnt], label="fit", color = dcyan)
+        right.scatter(xdata, series, label="normalization data", color=gray, zorder = 0)
+        
     right.axhline(
-        y=1, color=gray, zorder=-1, label="normalization factor"
+        y=1, color='k', zorder=-1, label="normalization factor"
     )
     left.set_title("FRAP", color="gray")
     right.set_xlabel("time (seconds)")
@@ -55,7 +58,8 @@ def pretty_plot(images, xdata, ydata, fitx, fity, experiment, name = None):
     )
     left.set_axis_off()
     circle = get_regions(experiment)
-    draw_circle(circle, ax=left, color=cyan, linewidth=1)
+    for region in circle:
+        draw_circle(region, ax=left, color=cyan, linewidth=1)
     scales = get_scales(experiment)
     scalebar(20, images, scales, color="w", label_on=True, ax=left)
     if name is not None:

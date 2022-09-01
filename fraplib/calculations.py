@@ -57,11 +57,6 @@ def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv 
     if background is None:
         background = 0
     
-    if mask is None:
-        circle = get_regions(datafile)
-        if isinstance(circle, tuple):
-            mask = create_circular_mask(imageseries, circle)
-    
     # time and events
     if bleachequiv is None:
         bleach = get_events(datafile)['BLEACH_START']
@@ -81,15 +76,26 @@ def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv 
     # background subtraction
     bsim = imageseries - background # background-subtracted image
     
-    # averaging pixels in bleach region
-    m = bsim[...,mask].mean(axis = -1) # mean of px in bleached region for each timepoint
     
-    # normalization
-    if bleachequiv is None:
-        normfactor = m[pre].mean()
-    else:
-        normfactor = m[0:bleachequiv-1].mean()
-    n = m/normfactor # all the datapoints
-    npost = m[post]/normfactor # just the datapoints after the bleach
+    if mask is None:
+        circle = get_regions(datafile)
+        m = []
+        normfactor = []
+        n = []
+        npost = []
+        for counter, region in enumerate(circle):
+            if isinstance(region, tuple):
+                mask = create_circular_mask(imageseries, region)
+
+                # averaging pixels in bleach region
+                m.append(bsim[...,mask].mean(axis = -1)) # list of arrays; mean of px in each bleached region for each timepoint
+
+                # normalization
+                if bleachequiv is None:
+                    normfactor.append(m[counter][pre].mean())
+                else:
+                    normfactor.append(m[counter][0:bleachequiv-1].mean())
+                n.append(m[counter]/normfactor[counter]) # all the datapoints
+                npost.append(m[counter][post]/normfactor[counter]) # just the datapoints after the bleach
     
     return t, n, traw, bleach, normfactor, m, bsim, mask, background

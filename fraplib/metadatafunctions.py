@@ -284,8 +284,8 @@ def get_regions(file, units=None):
             geom.append((cx, cy, r))
             ind += 1 
 
-    if len(geom) == 1:
-        geom = geom[0]
+    # if len(geom) == 1:
+    #     geom = geom[0]
     
     return geom
 
