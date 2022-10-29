@@ -299,22 +299,26 @@ def get_dims(file, specific = None):
     file : CziFile
         original data file
     specific : str
-        e.g 'CZYX'
+        e.g. 'CZYX'
 
     Returns
     -------
     dims : list
+    labels : list
+        e.g. ['C', 'Z', 'Y', 'X']
     """
 
     md = et.fromstring(file.metadata())
     names = [letter for letter in file.axes]  # list
     shape = file.asarray().shape  # tuple
 
-    dims = {name: size for name, size in zip(names, shape)}
+    dims_dict = {name: size for name, size in zip(names, shape)}
     
     if specific is None:
-        dims = [ dims[key] for key in dims if dims[key] > 1 ]
+        dims = [ dims_dict[key] for key in dims_dict if dims_dict[key] > 1 ]
+        labels = [ key for key in dims_dict if dims_dict[key] > 1 ]
     else:
-        dims = [dims[dim] for dim in specific]
+        dims = [dims_dict[dim] for dim in specific]
+        labels = specific
 
-    return dims
+    return dims, labels

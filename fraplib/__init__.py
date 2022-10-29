@@ -20,7 +20,7 @@ from .metadatafunctions import (
     get_dims,
 )
 from .attachments import get_events, get_timepoints
-from .calculations import evaluate
+from .calculations import evaluate, find_biggest_drop
 from .circular_mask import create_circular_mask
 from .expb2 import fit_expD, fit_expb2
 from .falsecolor import falsecolor, make_colormap
@@ -50,6 +50,7 @@ __all__ = [
     "get_events",
     "get_timepoints",
     "create_circular_mask",
+    "find_biggest_drop",
     "fit_expD",
     "fit_expb2",
     "falsecolor",

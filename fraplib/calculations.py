@@ -99,3 +99,22 @@ def evaluate(imageseries, datafile, background = None, mask = None, bleachequiv 
                 npost.append(m[counter][post]/normfactor[counter]) # just the datapoints after the bleach
     
     return t, n, traw, bleach, normfactor, m, bsim, mask, background
+
+
+def find_biggest_drop(data):
+    """
+    Returns the (right) array position of the biggest difference between two adjacent values in an array.
+    
+    Parameters
+    ----------
+    data : array
+    
+    Returns
+    -------
+    index : int
+    """
+    
+    drops = data[:-1] - data[1:]
+    biggest = drops.min()
+    index = np.flatnonzero(biggest == drops)[0]
+    return index
