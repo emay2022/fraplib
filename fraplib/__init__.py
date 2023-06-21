@@ -30,6 +30,7 @@ from .timestamp import timestamp
 from .pretty_plot import pretty_plot
 from .onestep import analyze
 from .read_chromatogram import read_chromatogram
+from .bkgdsubtract import bkgdsubtract
 
 __all__ = [
     "__version__",
@@ -60,5 +61,6 @@ __all__ = [
     "scalebar",
     "timestamp",
     "pretty_plot",
-    "analyze"
+    "analyze",
+    "bkgdsubtract",
 ]
