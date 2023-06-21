@@ -10,7 +10,7 @@ def bkgdsubtract(ims, labels):
     ims : numpy array
         image stack of shape (fovs, channels, Y, X)
     labels: array
-        mask stack of shape (fovs, Y, X)
+        segmentation masks; stack of shape (fovs, Y, X)
     
     Returns
     -------
