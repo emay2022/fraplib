@@ -32,6 +32,7 @@ from .onestep import analyze
 from .read_chromatogram import read_chromatogram
 from .bkgdsubtract import bkgdsubtract
 from .threshold import threshold
+from .filter_labels import check_labels_from_multiindex # JCR
 
 __all__ = [
     "__version__",
@@ -65,4 +66,5 @@ __all__ = [
     "analyze",
     "bkgdsubtract",
     "threshold",
+    "check_labels_from_multiindex",
 ]
