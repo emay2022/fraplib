@@ -1,5 +1,4 @@
 from matplotlib import pyplot as plt
-from mpl_interactions import hyperslicer
 from .metadatafunctions import get_regions, get_scales
 from .regions import draw_circle
 from .scalebar import scalebar
@@ -47,6 +46,7 @@ def pretty_plot(images, xdata, ydata, fitx, fity, experiment, name = None):
     # right.legend(loc = 'lower right', frameon = False)
 
     limits = (images[xdata >= 0, ...][0].min(), images[xdata >= 0, ...][0].max())
+    from mpl_interactions import hyperslicer
     ctrls = hyperslicer(
         images,
         ax=left,
